@@ -3,6 +3,7 @@ module.exports = function(app, settings,logger,mongoose){
           router = express.Router(),
           auth = require('./auth'),
           service = require('../services/device.service')(logger);
+          utiService = require('../services/util.service')(logger);
           
   
     router.use(auth.isAuthenticated);
@@ -12,8 +13,8 @@ module.exports = function(app, settings,logger,mongoose){
         logger.info("in @deviceRoute => @create device..");
         var newDevice = req.body;
         if(req.user) {
-            newDevice.created_By = req.user._id;
-            newDevice.modified_By = req.user._id;
+            newDevice.created_by = req.user._id;
+            newDevice.modified_by = req.user._id;
         }
         
         return service.create(req.body)
@@ -24,9 +25,8 @@ module.exports = function(app, settings,logger,mongoose){
         })
       })
     .get(function(req,res){
-        
         logger.info("in @deviceRoute going to find All devices..");
-        return service.findAll()
+        return service.findAll(pagination)
         .then(function(data){
           res.status(200).send(data);
         },function(err){
@@ -55,6 +55,20 @@ module.exports = function(app, settings,logger,mongoose){
       return service.delete(deviceId)
       .then(function(device){
          res.status(200).send(device);
+      },function(err){
+        res.status(500).send(err);
+      })
+    })
+
+
+    router.route('/search')
+    .get(function(req,res){
+      logger.info("in @deviceRoute enable entry..");
+      console.log(req.query.sort);
+      var query = utiService.getPaginationParams(req);
+      return service.search(query)
+      .then(function(devices){
+         res.status(200).send(devices);
       },function(err){
         res.status(500).send(err);
       })

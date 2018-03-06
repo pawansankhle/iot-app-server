@@ -36,5 +36,31 @@ module.exports = function(logger){
         return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
     };
 
+    utilService.getPaginationParams = function(req){
+        var queryParams = req.query;
+        var queryObj = {};
+        queryObj.sort = {};
+
+        if(queryParams.sortBy && queryParams.sortType){
+            queryObj.sort[queryParams.sortBy] = queryParams.sortType;
+        }else{
+            queryObj.sort['created_on'] = 'desc';
+        }
+
+        if(queryParams.page){
+            queryObj.page = queryParams.page || 1;
+        }
+
+        if(queryParams.limit){
+            queryObj.limit = queryParams.limit || 10;
+        }
+
+        console.log(queryObj);
+        return queryObj;
+
+    }
+
+
+
     return utilService;
 };

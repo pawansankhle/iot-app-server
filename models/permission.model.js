@@ -1,5 +1,5 @@
 
-module.exports = function (mongoose) {
+module.exports = function (mongoose,mongoosePaginate,autopopulate) {
     var Schema = mongoose.Schema;
 
     var permissionSchema = new mongoose.Schema({
@@ -7,8 +7,10 @@ module.exports = function (mongoose) {
         id:Number,
         permissionname:{type: String, enum:['user_permission','admin_permission',]}
     });
+    
+    permissionSchema.plugin(mongoosePaginate);
+    permissionSchema.plugin(autopopulate);
     permissionSchema.index({permissionname:1},{unique:true})
-
     return mongoose.model("Permission",permissionSchema);
 }
 

@@ -19,6 +19,21 @@ module.exports = function(logger){
         
     }
 
+
+    service.search = function(query){
+        logger.info("in @DeviceSrv @search entry...");
+        return new Promise(function(resolve,reject){
+            Device.paginate({deleted:false}, query, function(err, result) {
+                if(err){
+                    logger.error("in @DeviceSrv @search error::",err);
+                }
+                console.log("search ::", result);
+                resolve(result);
+            });
+        });
+        
+    }
+
     service.create = function(device){
         logger.info("in @DeviceSrv @create entry...");
         try{

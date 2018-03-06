@@ -1,9 +1,8 @@
-module.exports = function (mongoose) {
+module.exports = function (mongoose, mongoosePaginate,autopopulate) {
     var rolesSchema = mongoose.model('Role').schema,
         Schema = mongoose.Schema;
-        AddressSchema = mongoose.model('Address').schema,
-        autopopulate = require('mongoose-autopopulate')
-
+        AddressSchema = mongoose.model('Address').schema;
+        
     var userSchema = new mongoose.Schema({
         username: String,
         password: String,
@@ -21,6 +20,7 @@ module.exports = function (mongoose) {
         roles:[{type:Schema.Types.ObjectId , ref: 'Role',autopopulate:true}],
 
     });
+    userSchema.plugin(mongoosePaginate);
     userSchema.plugin(autopopulate);
 
     return mongoose.model("User", userSchema);

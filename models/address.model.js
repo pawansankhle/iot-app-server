@@ -1,5 +1,6 @@
 
-module.exports = function (mongoose) {
+module.exports = function (mongoose, mongoosePaginate, autopopulate) {
+    
     
     var addressSchema = new mongoose.Schema({
         pincode: String,
@@ -7,7 +8,9 @@ module.exports = function (mongoose) {
         created_on: {type: Date, default: Date.now},
         
     });
-
- mongoose.model("Address", addressSchema);
+ 
+    addressSchema.plugin(mongoosePaginate);
+    addressSchema.plugin(autopopulate);
+    mongoose.model("Address", addressSchema);
 }
 

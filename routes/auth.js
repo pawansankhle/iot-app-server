@@ -5,8 +5,9 @@ exports.isAuthenticated = function(req, res, next) {
             return next();
     }
     // return  next();
+    console.log(req.user);
     if(req.isAuthenticated()){
-            return  next();
+        return next();
     }
      res.status(401).send({success:false,message:"Unauthorize"});
     }

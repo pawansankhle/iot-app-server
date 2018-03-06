@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 var mongoose = require('mongoose');
 var db  = require("./core/db"); //connect to mongodb
 var config = require('./core/config') // get app config
@@ -13,10 +14,13 @@ const log4js = require('log4js');  // get debug log4js
 const log4j = require('./core/log4j')(log4js);
 const logger = log4js.getLogger('debug');  // set log {debug,info}
 var validator = require('validator');
-var jwt = require('jwt-simple')
+var jwt = require('jwt-simple');
+const autopopulate = require('mongoose-autopopulate');
+const mongoosePaginate = require('mongoose-paginate');
 var settings = {};
 
-require('./models/index.js')(mongoose); // get models for app
+
+require('./models/index.js')(mongoose,mongoosePaginate, autopopulate); // get models for app
 
 
 
@@ -24,10 +28,10 @@ require('./models/index.js')(mongoose); // get models for app
 var authenticate = require('./routes/authenticate')(passport,config,jwt);
 
 var allowCrossDomain = function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
-  // res.header('Access-Control-Allow-Credentials', true);
+  res.header('Access-Control-Allow-Credentials', true);
   next();
 }
 
@@ -41,13 +45,15 @@ app.set('env','development');
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(morgan('dev'));
+
 app.use(allowCrossDomain);
 app.use(session({
-  secret: 'super duper code',
+  secret: config.secret,
   resave: true,
   saveUninitialized: true,
-  cookie: { maxAge: 3600000 }
-}));
+  cookie: { maxAge: 3600000 },
+  store: new MongoStore({ mongooseConnection: mongoose.connection })
+  }));
 
 
 app.use(bodyParser.json());

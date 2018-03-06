@@ -1,9 +1,9 @@
 
-module.exports = function(mongoose){
-require('./address.model.js')(mongoose);
-require('./permission.model.js')(mongoose);
-require('./role.model.js')(mongoose);
-require('./user.model.js')(mongoose);
-require('./device.model.js')(mongoose);
+module.exports = function(mongoose, mongoosePaginate,autopopulate){
+require('./address.model.js')(mongoose, mongoosePaginate,autopopulate);
+require('./permission.model.js')(mongoose, mongoosePaginate,autopopulate);
+require('./role.model.js')(mongoose, mongoosePaginate,autopopulate);
+require('./user.model.js')(mongoose, mongoosePaginate,autopopulate);
+require('./device.model.js')(mongoose, mongoosePaginate,autopopulate);
 
 }
