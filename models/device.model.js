@@ -10,11 +10,14 @@ module.exports = function (mongoose, mongoosePaginate, autopopulate) {
         created_by: { type: Schema.Types.ObjectId, ref : 'User' },
         created_on: {type: Date, default: Date.now},
         modified_on: {type: Date, default: Date.now},
+        status_updated_on: {type: Date, default: Date.now},
         enabled:Boolean,
         deleted:Boolean,
+        inactive_duration:{type: Number},
+        inactive_duration_unit:{ type:String, enum: ['MONTHS','DAYS','MINUTES'], required:true},
         type: { type:String, enum: ['ESP8266','ORANGE_PI','RESPBERRY_PI'], required:true},
         state: Boolean,
-        status: {type: String, enum: ['ONLINE','OFFLINE'], required: true},
+        is_online: {type: Boolean, required: true},
         location: {
             type : {Type:String,default:"Point"},
             coordinates : []
@@ -23,7 +26,7 @@ module.exports = function (mongoose, mongoosePaginate, autopopulate) {
     });
     deviceSchema.plugin(mongoosePaginate);
     deviceSchema.plugin(autopopulate);
-    deviceSchema.index({device_id:1},{unique:true})
+    deviceSchema.index({device_id:1, name:1},{unique:true})
     return mongoose.model("Device", deviceSchema);
 }
 

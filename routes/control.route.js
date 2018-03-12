@@ -2,7 +2,7 @@ module.exports = function(app, settings,logger,mongoose){
     var express = require('express'),
           router = express.Router(),
           auth = require('./auth'),
-          service = require('../services/device.service')(logger);
+          service = require('../services/control.service')(logger);
           utiService = require('../services/util.service')(logger);
           
   
@@ -10,14 +10,14 @@ module.exports = function(app, settings,logger,mongoose){
   
     router.route('/')
     .post(function(req,res){
-        logger.info("in @deviceRoute => @create device..");
-        var newDevice = req.body;
+        logger.info("in @controlRoute => @create control..");
+        var newControl = req.body;
         if(req.user) {
-            newDevice.created_by = req.user._id;
-            newDevice.modified_by = req.user._id;
+            newControl.created_by = req.user._id;
+            newControl.modified_by = req.user._id;
         }
         
-        return service.create(newDevice)
+        return service.create(newControl)
         .then(function(data){
           res.status(200).send(data);
         },function(err){
@@ -25,7 +25,7 @@ module.exports = function(app, settings,logger,mongoose){
         })
       })
     .get(function(req,res){
-        logger.info("in @deviceRoute going to find All devices..");
+        logger.info("in @controlRoute going to find All controls..");
         return service.findAll(req)
         .then(function(data){
           res.status(200).send(data);
@@ -37,24 +37,24 @@ module.exports = function(app, settings,logger,mongoose){
   
     router.route('/enable/:id/:enabled')
     .post(function(req,res){
-      logger.info("in @deviceRoute enable entry..");
-      var  deviceId = req.params.id
+      logger.info("in @controlRoute enable entry..");
+      var  controlId = req.params.id
       var enabled = req.params.enabled
-      return service.enableDisable(deviceId,enabled)
-      .then(function(device){
-         res.status(200).send(device);
+      return service.enableDisable(controlId,enabled)
+      .then(function(control){
+         res.status(200).send(control);
       },function(err){
         res.status(500).send(err);
       })
     })
   
-    router.route('/removeById/:deviceId')
+    router.route('/removeById/:controlId')
     .post(function(req,res){
-      logger.info("in @deviceRoute enable entry..");
-      var deviceId = req.params.deviceId
-      return service.delete(deviceId)
-      .then(function(device){
-         res.status(200).send(device);
+      logger.info("in @controlRoute enable entry..");
+      var controlId = req.params.controlId
+      return service.delete(controlId)
+      .then(function(control){
+         res.status(200).send(control);
       },function(err){
         res.status(500).send(err);
       })
@@ -63,16 +63,15 @@ module.exports = function(app, settings,logger,mongoose){
 
     router.route('/search')
     .get(function(req,res){
-      logger.info("in @deviceRoute enable entry..");
-      console.log(req.user);
+      logger.info("in @controlRoute enable entry..");
       var query = utiService.getPaginationParams(req);
       return service.search(query, req)
-      .then(function(devices){
-         res.status(200).send(devices);
+      .then(function(controles){
+         res.status(200).send(controles);
       },function(err){
         res.status(500).send(err);
       })
     })
   
-  app.use('/api/device', router);
+  app.use('/api/control', router);
   }

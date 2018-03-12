@@ -15,15 +15,16 @@ const log4j = require('./core/log4j')(log4js);
 const logger = log4js.getLogger('debug');  // set log {debug,info}
 var validator = require('validator');
 var jwt = require('jwt-simple');
+var mqtt_client = require('./core/mqtt.connection')(config, logger);
 const autopopulate = require('mongoose-autopopulate');
 const mongoosePaginate = require('mongoose-paginate');
 var settings = {};
 
 
 require('./models/index.js')(mongoose,mongoosePaginate, autopopulate); // get models for app
+require('./mqtt_subscribers/index.js')(logger, mqtt_client); // connect to broker and subscribe topic
 
-
-
+require('./core/shedular.js')(logger) // schedule jobs
 
 var authenticate = require('./routes/authenticate')(passport,config,jwt);
 
@@ -34,6 +35,9 @@ var allowCrossDomain = function(req, res, next) {
   res.header('Access-Control-Allow-Credentials', true);
   next();
 }
+
+
+
 
 var app = express();
 

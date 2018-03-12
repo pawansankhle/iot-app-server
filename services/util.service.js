@@ -55,7 +55,6 @@ module.exports = function(logger){
             queryObj.limit = queryParams.limit || 10;
         }
 
-        console.log(queryObj);
         return queryObj;
 
     }
