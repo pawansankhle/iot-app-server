@@ -12,7 +12,6 @@ module.exports = function(config, logger){
         logger.info("mqtt client connected...");
         for(i=0; i < config.mqtt_topics.length; i++){
             var topic = config.mqtt_topics[i];
-            console.log("subscribed to topic :", topic);
             logger.info("subscribed to topic : " + topic);
             client.subscribe(topic)
             

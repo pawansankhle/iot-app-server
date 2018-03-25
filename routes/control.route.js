@@ -1,8 +1,8 @@
-module.exports = function(app, settings,logger,mongoose){
+module.exports = function(app, settings,logger,mongoose, mqtt_client){
     var express = require('express'),
           router = express.Router(),
           auth = require('./auth'),
-          service = require('../services/control.service')(logger);
+          service = require('../services/control.service')(logger, mqtt_client);
           utiService = require('../services/util.service')(logger);
           
   
@@ -35,12 +35,12 @@ module.exports = function(app, settings,logger,mongoose){
   
     })
   
-    router.route('/enable/:id/:enabled')
+    router.route('/onOff/:id/:enabled')
     .post(function(req,res){
       logger.info("in @controlRoute enable entry..");
       var  controlId = req.params.id
       var enabled = req.params.enabled
-      return service.enableDisable(controlId,enabled)
+      return service.onOff(controlId,enabled,req.body)
       .then(function(control){
          res.status(200).send(control);
       },function(err){

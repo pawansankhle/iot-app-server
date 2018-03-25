@@ -15,14 +15,14 @@ const log4j = require('./core/log4j')(log4js);
 const logger = log4js.getLogger('debug');  // set log {debug,info}
 var validator = require('validator');
 var jwt = require('jwt-simple');
-var mqtt_client = require('./core/mqtt.connection')(config, logger);
+const mqtt_client = require('./core/mqtt.connection')(config, logger);
 const autopopulate = require('mongoose-autopopulate');
 const mongoosePaginate = require('mongoose-paginate');
 var settings = {};
 
 
 require('./models/index.js')(mongoose,mongoosePaginate, autopopulate); // get models for app
-require('./mqtt_subscribers/index.js')(logger, mqtt_client); // connect to broker and subscribe topic
+require('./mqtt/index.js')(logger, mqtt_client); // connect to broker and subscribe topic
 
 require('./core/shedular.js')(logger) // schedule jobs
 
@@ -68,7 +68,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 app.use(passport.session());
 
-require('./routes/index.js')(app, settings, logger,mongoose);
+require('./routes/index.js')(app, settings, logger,mongoose, mqtt_client);
 
 
 //initialize passport

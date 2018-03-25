@@ -11,7 +11,8 @@ module.exports = function (mongoose, mongoosePaginate, autopopulate) {
         deleted: Boolean,
         type: { type:String, enum: ['BUTTON','SENSOR'], required:true},
         state: Boolean,
-        control_by: { type: Schema.Types.ObjectId, ref : 'Device' }
+        controller_pin: { type: Number, required:true},
+        control_by: { type: Schema.Types.ObjectId, ref : 'Device', autopopulate: true }
     });
 
     controlSchema.plugin(mongoosePaginate);

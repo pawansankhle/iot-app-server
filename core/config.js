@@ -6,6 +6,6 @@ module.exports = {
     broker_port: 10063,
     broker_username: "ukkwldeo",
     broker_password: "2RVrpiGaqfX-",
-    mqtt_topics: ["device/#"]
+    mqtt_topics: ['device/#']
 }
 
